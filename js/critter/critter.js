@@ -73,7 +73,7 @@ function resizeCanvas() {
 	can.height = window.innerHeight;
 
 	con.imageSmoothingEnabled = false;
-	con.font = "1.25em sans-serif";
+	con.font = "1.33em sans-serif";
 	con.textAlign = "end";
 	con.textBaseline = "bottom";
 
