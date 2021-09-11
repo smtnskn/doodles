@@ -1,6 +1,12 @@
 #!/usr/bin/tcc -run
 
-// A 16-, 32-, and 64-bit m-sequence linear-feedback shift register
+/*
+ * lfsr.c
+ *
+ * Author:  Sami Tanskanen
+ * Date:    2021/09/11
+ * Comment: A 16-, 32-, and 64-bit m-sequence linear-feedback shift register
+ */
 
 #include <stdlib.h>
 #include <time.h>
