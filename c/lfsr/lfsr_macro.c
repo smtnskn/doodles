@@ -1,6 +1,6 @@
 #!/usr/bin/tcc -run
 /*
- * lfsr.c
+ * lfsr_macro.c
  *
  * Author:  Sami Tanskanen
  * Date:    2021/09/11
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 	const uint64_t one = 1;
 	uint64_t count = 0;
 
-	uint64_t state_64 = rand(); //TODO: arc4random for 64bit
+	uint64_t state_64 = rand();
 	const int taps_64[] = { 1, 3, 4 };
 	uint64_t out_bit_64;
 

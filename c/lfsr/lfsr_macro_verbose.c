@@ -1,6 +1,6 @@
 #!/usr/bin/tcc -run
 /*
- * lfsr.c
+ * lfsr_macro_verbose.c
  *
  * Author:  Sami Tanskanen
  * Date:    2021/09/12
