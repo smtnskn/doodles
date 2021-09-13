@@ -1,6 +1,6 @@
-#!/usr/bin/tcc -run
+/* #!/usr/bin/tcc -run */
 /*
- * lfsr.c v0.1.1
+ * lfsr.c v0.0.2
  *
  * Author:  Sami Tanskanen
  * Date:    2021/09/13
@@ -15,6 +15,15 @@
 #include <fcntl.h>
 #include <string.h>
 
+#define LFSR					  \
+out_bit = (state				  \
+    ^ (state >> taps[0])			  \
+    ^ (state >> taps[1])			  \
+    ^ (state >> taps[2])) & 1LLU;		  \
+state = ((state >> 1) | (out_bit << (bits - 1))); \
+count++;					  \
+putchar(48 + out_bit)
+
 void die(int);
 
 int main(int argc, char* argv[])
@@ -25,14 +34,18 @@ int main(int argc, char* argv[])
 	uint64_t out_bit;
 	int taps[3] = { 0 };
 	int bits = 32;
+	int verbose = 0;
 
 	int opt = 0;
-	while ((opt = getopt(argc, argv, "hc:b:")) != -1) {
+	while ((opt = getopt(argc, argv, "hvn:b:")) != -1) {
 		switch (opt) {
 		case 'h':
 			die(0);
 			break;
-		case 'c':
+		case 'v':
+			verbose = 1;
+			break;
+		case 'n':
 			total = atol(optarg);
 			if (total == 0 && optarg[0] != '0') { // invalid input
 				die(1);
@@ -57,8 +70,8 @@ int main(int argc, char* argv[])
 	if (argc > optind && strcmp(argv[optind], "-") == 0) {
 		read(0, &state, 8);
 	} else {
-		srand(time(NULL));
-		state = rand(); // any non-zero value will do
+		uint64_t t = (uint64_t)time(NULL);
+		state = ~t << 32 | t; // any non-zero number will do
 	}
 
 	switch (bits) {
@@ -76,22 +89,21 @@ int main(int argc, char* argv[])
 		break;
 	}
 
-	do {
-		// if verbose, print1 and print2 point to a no-op.
-		// else, point to proper functions
-		// print1();
-
-		out_bit = (state
-		    ^ (state >> taps[0])
-		    ^ (state >> taps[1])
-		    ^ (state >> taps[2])) & 1LLU;
-		state = ((state >> 1) | (out_bit << (bits - 1)));
-		count++;
-		putchar(48 + out_bit);
-
-		//print2();
-	} while (count < total);
-	putchar('\n');
+	if (verbose) {
+		do {
+			for (int i = bits - 1; i >= 0; i--) {
+				putchar(48 + ((1LLU << i & state) >> i));
+			}
+			putchar(' ');
+			LFSR;
+			printf(" %" PRIu64 "\n", count);
+		} while (count < total);
+	} else {
+		do {
+			LFSR;
+		} while (count < total);
+		putchar('\n');
+	}
 
 	return 0;
 }
@@ -99,15 +111,17 @@ int main(int argc, char* argv[])
 void die(int code)
 {
 	puts("\
-Usage:                                                 \n\
-  lsfr [-b 16|32|64] [-c <number>] [-h] [-]            \n\
-                                                       \n\
-Options:                                               \n\
-  -h  Show this message                                \n\
-  -b  Bitness (defaults to 32)                         \n\
-  -c  Count (defaults to 2^bitness)                    \n\
-      A count of 0 will cause an infinite loop         \n\
-  -   Initialise state from stdin (must be given last) \
+Usage:                                                                 \n\
+  lsfr [-hv] [-b 16|32|64] [-n <number>] [-]                           \n\
+                                                                       \n\
+Options:                                                               \n\
+  -h  Show this message                                                \n\
+  -v  Format output as \"<state in binary> <out bit> <current count>\" \n\
+  -b  Bitness (defaults to 32)                                         \n\
+  -n  Number of bits to produce                                        \n\
+        Defaults to the full period 2^bitness                          \n\
+        A value of 0 will cause an infinite loop                       \n\
+  -   Initialise state from stdin (must be given last)                 \
 ");
 	exit(code);
 }
