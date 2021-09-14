@@ -9,10 +9,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
 #include <inttypes.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <string.h>
 
 #define LFSR					  \
@@ -70,8 +68,8 @@ int main(int argc, char* argv[])
 	if (argc > optind && strcmp(argv[optind], "-") == 0) {
 		read(0, &state, 8);
 	} else {
-		uint64_t t = (uint64_t)time(NULL);
-		state = ~t << 32 | t; // any non-zero number will do
+		uint64_t seed = (uint64_t)&state;
+		state = ~seed ^ seed << 32; // any n >0 will do
 	}
 
 	switch (bits) {
@@ -119,7 +117,7 @@ Options:                                                               \n\
   -v  Format output as \"<state in binary> <out bit> <current count>\" \n\
   -b  Bitness (defaults to 32)                                         \n\
   -n  Number of bits to produce                                        \n\
-        Defaults to the full period 2^bitness                          \n\
+        Defaults to the full period of 2^bitness                       \n\
         A value of 0 will cause an infinite loop                       \n\
   -   Initialise state from stdin (must be given last)                 \
 ");
