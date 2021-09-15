@@ -1,11 +1,13 @@
 /* #!/usr/bin/tcc -run */
 /*
- * lfsr.c v0.0.2
+ * lfsr.c
  *
  * Author:  Sami Tanskanen
  * Date:    2021/09/13
  * Comment: A 16-, 32-, and 64-bit m-sequence linear-feedback shift register
  */
+
+// TODO: output the raw bitstream, -r
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -33,6 +35,7 @@ int main(int argc, char* argv[])
 	int taps[3] = { 0 };
 	int bits = 32;
 	int verbose = 0;
+	int loop = 0;
 
 	int opt = 0;
 	while ((opt = getopt(argc, argv, "hvn:b:")) != -1) {
@@ -45,8 +48,10 @@ int main(int argc, char* argv[])
 			break;
 		case 'n':
 			total = atol(optarg);
-			if (total == 0 && optarg[0] != '0') { // invalid input
+			if (total == 0) {
 				die(1);
+			} else if ((int64_t)total == -1) {
+				loop = 1;
 			}
 			break;
 		case 'b':
@@ -69,7 +74,7 @@ int main(int argc, char* argv[])
 		read(0, &state, 8);
 	} else {
 		uint64_t seed = (uint64_t)&state;
-		state = ~seed ^ seed << 32; // any n >0 will do
+		state = ~seed ^ seed << 32;  // any n >0 will do
 	}
 
 	switch (bits) {
@@ -95,11 +100,11 @@ int main(int argc, char* argv[])
 			putchar(' ');
 			LFSR;
 			printf(" %" PRIu64 "\n", count);
-		} while (count < total);
+		} while (count < total || loop);
 	} else {
 		do {
 			LFSR;
-		} while (count < total);
+		} while (count < total || loop);
 		putchar('\n');
 	}
 
@@ -118,7 +123,7 @@ Options:                                                               \n\
   -b  Bitness (defaults to 32)                                         \n\
   -n  Number of bits to produce                                        \n\
         Defaults to the full period of 2^bitness                       \n\
-        A value of 0 will cause an infinite loop                       \n\
+        A value of -1 will cause an infinite loop                      \n\
   -   Initialise state from stdin (must be given last)                 \
 ");
 	exit(code);
