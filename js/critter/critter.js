@@ -1,5 +1,5 @@
 /*
- * critter.js v0.1
+ * critter.js
  *
  * Author:  Sami Tanskanen
  * Date:    2021/09/02
@@ -13,7 +13,7 @@ const con = can.getContext("2d");
 
 const TAU = Math.PI * 2;
 const PI = Math.PI;
-const HALF_PI = Math.PI / 2
+const HALF_PI = Math.PI / 2;
 const QUARTER_PI = HALF_PI / 2;
 const EIGHTH_PI = QUARTER_PI / 2;
 const XSCALE = 1920 / screen.width;
@@ -73,7 +73,7 @@ function resizeCanvas() {
 	can.height = window.innerHeight;
 
 	con.imageSmoothingEnabled = false;
-	con.font = "1.33em sans-serif";
+	con.font = "22px sans-serif";
 	con.textAlign = "end";
 	con.textBaseline = "bottom";
 

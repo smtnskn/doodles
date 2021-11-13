@@ -50,9 +50,8 @@ int main(int argc, char* argv[])
 			total = atol(optarg);
 			if (total == 0) {
 				die(1);
-			} else if ((int64_t)total == -1) {
-				loop = 1;
 			}
+			loop = (int64_t)total == -1 ? 1 : 0;
 			break;
 		case 'b':
 			bits = atoi(optarg);

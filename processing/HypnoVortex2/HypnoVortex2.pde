@@ -1,21 +1,15 @@
-float
-	t, t2,
-	rad,
-	ang,
-	weight,
-	x, y,
-	prevX, prevY,
-	cx, cy,
-	step,
-	maxWidth,
-	widthConst,
-	widthVar,
-	radStep;
-int
-	steps;
-boolean
-	OUTWARD,
-	SILLY_METHOD;
+float t, t2;
+float rad, ang;
+float weight;
+float x, y;
+float prevX, prevY;
+float cx, cy;
+float step, radStep;
+float maxWidth, widthConst, widthVar;
+
+int steps;
+
+boolean OUTWARD, SILLY_METHOD;
 
 void setup()
 {
